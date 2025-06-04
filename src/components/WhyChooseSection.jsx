@@ -1,8 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext'; 
 
 const WhyChooseSection = () => {
     const navigate = useNavigate();
+
+
+    const { user, isLoggedIn } = useAuth();
 
   return (
     <div className="bg-[#f8edf0]">
@@ -18,10 +22,10 @@ const WhyChooseSection = () => {
           one place. Built by and for Brooklyn College students.
         </p>
 
-        <button onClick={() => navigate("/signup")}
+        {!isLoggedIn && <button onClick={() => navigate("/signup")}
          className="bg-[#8A1538] text-white py-2 px-6 rounded-md hover:bg-[#6d0f2e] transition">
           Sign Up With Your School Credentials
-        </button>
+        </button>}
 
         <p className="text-sm text-gray-600 italic">
           *No need to create another account!

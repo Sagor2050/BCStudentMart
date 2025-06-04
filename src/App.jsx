@@ -10,6 +10,8 @@ import Footer from "./components/Footer";
 import PostBookPage from "./pages/PostBookPage";
 import MarketplacePage from "./pages/MarketplacePage";
 import ActualListingsSection from './components/ActualListingSection';
+import UserProfilePage from './pages/UserProfilePage';
+import VerifyEmail from './pages/VerifyEmail';
 
 function App() {
   return (
@@ -36,6 +38,10 @@ function App() {
       <Route path="/signup" element={<SignupPage />} /> 
       <Route path="/post-book" element={<PostBookPage />} />
       <Route path="/marketplace" element={<MarketplacePage />} />
+      <Route path="/profile/:userId" element={<UserProfilePage />} />
+      <Route path="/profile" element={<UserProfilePage />} /> 
+      <Route path="/verify-email" element={<VerifyEmail />} />
+
 
     </Routes>
     </>
