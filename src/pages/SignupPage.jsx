@@ -3,9 +3,10 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   updateProfile,
+  signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; // ✅ Firestore
-import { auth, db } from "../firebase"; // ✅ Import db
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
@@ -15,12 +16,13 @@ const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false); // New state for preventing double submit
 
   const allowedDomains = [
     "@student.brooklyn.cuny.edu",
     "@bcmail.cuny.edu",
     "@smail.astate.edu",
-    "@gmail.com", //Change it after testing
+    "@gmail.com", // Change later after testing
   ];
 
   const isAllowedEmail = (email) =>
@@ -28,35 +30,49 @@ const SignupPage = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (loading) return; // Prevent duplicate requests
+
+    setLoading(true);
     setMessage("");
 
     if (!isAllowedEmail(email)) {
       setMessage("Only official college email addresses are allowed.");
+      setLoading(false);
       return;
     }
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      console.log("✅ User created:", user.uid);
 
-      // ✅ Set Firebase Auth profile name
       await updateProfile(user, { displayName: name });
+      console.log("✅ User profile updated with name:", name);
 
-      // ✅ Store user info in Firestore
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
         email: user.email,
         username: name,
+        profilePic: "",
+        bio: "",
+        conversations: [],
         createdAt: new Date(),
       });
+      console.log("✅ User data saved to Firestore");
 
-      // ✅ Send email verification
       await sendEmailVerification(user);
+      console.log("✅ Verification email sent to:", user.email);
+
+      await signOut(auth);
+      console.log("👋 User signed out to prevent verification issue");
 
       setMessage("✅ Verification email sent! Please check your inbox.");
-      setTimeout(() => navigate("/login"), 3000); // auto-redirect after 3 seconds
+      setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
+      console.error("❌ Signup error:", error.message);
       setMessage(error.message);
+    } finally {
+      setLoading(false); // Re-enable form
     }
   };
 
@@ -72,7 +88,7 @@ const SignupPage = () => {
         </Link>
       </div>
 
-      <div className="w-full max-w-md bg-[#ffffff] shadow-lg rounded-xl p-6 space-y-6">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-6 space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-[#8A1538]">Sign Up</h1>
           <p className="text-sm text-gray-600">Create your student account</p>
@@ -115,9 +131,10 @@ const SignupPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-[#8A1538] text-white py-2 rounded-md hover:bg-[#6d0f2e] transition"
+            disabled={loading}
+            className="w-full bg-[#8A1538] text-white py-2 rounded-md transition hover:bg-[#6d0f2e] disabled:opacity-50"
           >
-            Sign Up
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
 
           <p className="text-xs text-center text-gray-500 italic">
@@ -143,3 +160,4 @@ const SignupPage = () => {
 };
 
 export default SignupPage;
+

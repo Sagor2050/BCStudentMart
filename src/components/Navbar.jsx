@@ -92,14 +92,16 @@ const Navbar = () => {
           >
             Sell Item
           </button>
-          <button
-            onClick={() => navigate('/help')}
+
+          {isLoggedIn && (<button
+            onClick={() => navigate(`/profile/${user.uid}`)}
             className="px-5 py-3 text-left hover:bg-gray-200 text-[#7D1431] border-b border-gray-300"
           >
-            Help
-          </button>
+            Profile
+          </button>)}
+
           <button
-            onClick={() => navigate('/track')}
+            onClick={() => navigate('/Track')}
             className="px-5 py-3 text-left hover:bg-gray-200 text-[#7D1431] border-b border-gray-300"
           >
             Track

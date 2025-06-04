@@ -85,7 +85,7 @@ const MarketplacePage = () => {
                 image={
                   book.imageURL ||
                   "https://via.placeholder.com/150x200.png?text=No+Image"
-                }
+                }               
               />
             ))}
           </div>

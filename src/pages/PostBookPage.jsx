@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { db, storage, auth } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { uploadBytesResumable } from "firebase/storage";
 
 const PostBookPage = () => {
   const [form, setForm] = useState({
@@ -30,7 +31,6 @@ const PostBookPage = () => {
       setFile(null);
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
@@ -51,36 +51,52 @@ const PostBookPage = () => {
   
       const imageName = `book-images/${Date.now()}_${file.name}`;
       const storageRef = ref(storage, imageName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
   
-      console.log("🔄 Uploading to storage:", imageName);
-      const snapshot = await uploadBytes(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log(`📊 Upload is ${progress.toFixed(1)}% done`);
+        },
+        (error) => {
+          console.error("❌ Upload error:", error.message);
+          alert("Image upload failed: " + error.message);
+          setUploading(false);
+        },
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log("🌐 Download URL:", downloadURL);
   
-      console.log("✅ Upload complete, fetching URL...");
-      const imageURL = await getDownloadURL(snapshot.ref);
-      console.log("🌐 Download URL:", imageURL);
+            await addDoc(collection(db, "books"), {
+              ...form,
+              price: parseFloat(form.price),
+              imageURL: downloadURL,
+              postedBy: auth.currentUser.uid,
+              timestamp: serverTimestamp(),
+            });
   
-      await addDoc(collection(db, "books"), {
-        ...form,
-        price: parseFloat(form.price),
-        imageURL,
-        postedBy: auth.currentUser.uid,
-        timestamp: serverTimestamp(),
-      });
+            console.log("📚 Book added to Firestore.");
+            alert("✅ Book posted successfully!");
   
-      console.log("📚 Book added to Firestore.");
-      alert("✅ Book posted successfully!");
-  
-      setForm({ title: "", author: "", description: "", price: "", condition: "Good" });
-      setFile(null);
-    } catch (error) {
-      console.error("❌ Error posting book:", error);
-      alert("Something went wrong. Check the console for details.");
-    } finally {
+            setForm({ title: "", author: "", description: "", price: "", condition: "Good" });
+            setFile(null);
+          } catch (finalError) {
+            console.error("❌ Firestore save error:", finalError.message);
+            alert("Failed to save book: " + finalError.message);
+          } finally {
+            setUploading(false);
+            console.log("🟦 Upload process done");
+          }
+        }
+      );
+    } catch (outerError) {
+      console.error("❌ Unexpected error:", outerError.message);
+      alert("Something went wrong. Check console for details.");
       setUploading(false);
-      console.log("🟦 Upload process done");
     }
   };
-  
   
 
   return (
