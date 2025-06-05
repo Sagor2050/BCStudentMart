@@ -38,7 +38,7 @@ function App() {
       <Route path="/signup" element={<SignupPage />} /> 
       <Route path="/post-book" element={<PostBookPage />} />
       <Route path="/marketplace" element={<MarketplacePage />} />
-      <Route path="/profile/:userId" element={<UserProfilePage />} />
+      <Route path="/user-profile/:userId" element={<UserProfilePage />} />
       <Route path="/profile" element={<UserProfilePage />} /> 
       <Route path="/verify-email" element={<VerifyEmail />} />
 

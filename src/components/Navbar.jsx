@@ -94,7 +94,7 @@ const Navbar = () => {
           </button>
 
           {isLoggedIn && (<button
-            onClick={() => navigate(`/profile/${user.uid}`)}
+            onClick={() => navigate(`/user-profile/${user.uid}`)}
             className="px-5 py-3 text-left hover:bg-gray-200 text-[#7D1431] border-b border-gray-300"
           >
             Profile
