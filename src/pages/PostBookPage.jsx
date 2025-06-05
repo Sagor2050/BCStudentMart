@@ -68,12 +68,16 @@ const PostBookPage = () => {
           try {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             console.log("🌐 Download URL:", downloadURL);
+
+            //changes
   
             await addDoc(collection(db, "books"), {
               ...form,
               price: parseFloat(form.price),
               imageURL: downloadURL,
-              postedBy: auth.currentUser.uid,
+              postedBy: auth.currentUser.uid, // optional, for backward compatibility
+              sellerUid: auth.currentUser.uid,
+              sellerName: auth.currentUser.displayName || "Unknown Seller",
               timestamp: serverTimestamp(),
             });
   

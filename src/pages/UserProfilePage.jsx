@@ -106,20 +106,12 @@ const UserProfilePage = () => {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {books.map((book) => (
-                <BookCard
-                  key={book.id}
-                  title={book.title}
-                  author={book.author}
-                  price={`$${book.price}`}
-                  image={
-                    book.imageURL ||
-                    "https://via.placeholder.com/150x200?text=No+Image"
-                  }
-                />
+                <BookCard key={book.id} book={book} />
               ))}
             </div>
           )}
         </div>
+
       </div>
     </section>
   );

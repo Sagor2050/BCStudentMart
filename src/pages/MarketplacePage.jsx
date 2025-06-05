@@ -1,3 +1,4 @@
+// src/pages/MarketplacePage.jsx
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
@@ -8,17 +9,15 @@ import SearchBar from "../components/SearchBar";
 
 const MarketplacePage = () => {
   const [books, setBooks] = useState([]);
-  const { user, isLoggedIn } = useAuth(); // 🔁 Use shared login state
+  const { user, isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
-  // 🔐 Redirect to login if not logged in
   useEffect(() => {
     if (!isLoggedIn) {
       navigate("/login");
     }
   }, [isLoggedIn, navigate]);
 
-  // 📦 Fetch all books sorted by newest
   useEffect(() => {
     const fetchBooks = async () => {
       try {
@@ -44,7 +43,6 @@ const MarketplacePage = () => {
       <SearchBar />
 
       <div className="max-w-7xl mx-auto">
-        {/* Top bar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-8">
           <h2 className="text-3xl font-bold text-[#8A1538]">Marketplace</h2>
 
@@ -71,22 +69,12 @@ const MarketplacePage = () => {
           </div>
         </div>
 
-        {/* Listings */}
         {books.length === 0 ? (
           <p className="text-center text-gray-600">No books posted yet.</p>
         ) : (
           <div className="grid grid-cols-3 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
-            {books.map((book) => (
-              <BookCard
-                key={book.id}
-                title={book.title}
-                author={book.author}
-                price={`$${book.price}`}
-                image={
-                  book.imageURL ||
-                  "https://via.placeholder.com/150x200.png?text=No+Image"
-                }               
-              />
+            {books.map(book => (
+              <BookCard key={book.id} book={book} />
             ))}
           </div>
         )}
