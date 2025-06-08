@@ -4,7 +4,7 @@ import {
   signOut,
   sendPasswordResetEmail,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth } from "../services/firebase";
 import { useNavigate, Link } from "react-router-dom";
 
 const LoginPage = () => {

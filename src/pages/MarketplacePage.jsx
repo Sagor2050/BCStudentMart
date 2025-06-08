@@ -1,6 +1,6 @@
 // src/pages/MarketplacePage.jsx
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";

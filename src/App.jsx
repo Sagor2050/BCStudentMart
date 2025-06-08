@@ -12,6 +12,8 @@ import MarketplacePage from "./pages/MarketplacePage";
 import ActualListingsSection from './components/ActualListingSection';
 import UserProfilePage from './pages/UserProfilePage';
 import VerifyEmail from './pages/VerifyEmail';
+import ChatPage from "./pages/ChatPage";
+import MessagesPage from "./pages/MessagesPage";
 
 function App() {
   return (
@@ -41,6 +43,8 @@ function App() {
       <Route path="/user-profile/:userId" element={<UserProfilePage />} />
       <Route path="/profile" element={<UserProfilePage />} /> 
       <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/messages/:conversationId" element={<ChatPage />} />
+      <Route path="/messages" element={<MessagesPage />} />
 
 
     </Routes>

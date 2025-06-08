@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   doc,
   getDoc,
@@ -8,26 +8,40 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { db } from "../firebase";
+import { db } from "../services/firebase";
 import { useAuth } from "../context/AuthContext";
 import BookCard from "../components/BookCard";
+import { createOrGetConversation } from "../utils/createOrGetConversation";
 
 const UserProfilePage = () => {
-  const { userId: paramUserId } = useParams(); // userId from route if exists
-  const { user } = useAuth();                  // Current logged-in user
+  const { userId: paramUserId } = useParams(); // userId from route
+  const { user } = useAuth();                  // Logged-in user
+  const navigate = useNavigate();
+
   const [profile, setProfile] = useState(null);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const viewedUserId = paramUserId || user?.uid;
 
-  // ✅ Load user profile and books
+  // ✅ Handle messaging
+  const handleMessageSeller = async () => {
+    try {
+      const { id: convoId } = await createOrGetConversation(user.uid, viewedUserId);
+      navigate(`/messages/${convoId}`);
+    } catch (err) {
+      console.error("Failed to initiate message:", err);
+      alert("Something went wrong. Please try again.");
+    }
+  };
+
+  // ✅ Load profile and books
   useEffect(() => {
     if (!viewedUserId) return;
 
     const fetchData = async () => {
       try {
-        // 🔍 Get user profile
+        // 🔍 Get profile
         const userRef = doc(db, "users", viewedUserId);
         const userSnap = await getDoc(userRef);
         if (userSnap.exists()) {
@@ -36,7 +50,7 @@ const UserProfilePage = () => {
           setProfile(null);
         }
 
-        // 📚 Get user's active book listings
+        // 📚 Get user's books
         const booksRef = collection(db, "books");
         const q = query(booksRef, where("postedBy", "==", viewedUserId));
         const snapshot = await getDocs(q);
@@ -56,15 +70,11 @@ const UserProfilePage = () => {
   }, [viewedUserId]);
 
   if (loading) {
-    return (
-      <p className="text-center mt-10 text-gray-600">Loading profile...</p>
-    );
+    return <p className="text-center mt-10 text-gray-600">Loading profile...</p>;
   }
 
   if (!profile) {
-    return (
-      <p className="text-center mt-10 text-red-600">❌ Profile not found.</p>
-    );
+    return <p className="text-center mt-10 text-red-600">❌ Profile not found.</p>;
   }
 
   return (
@@ -78,24 +88,22 @@ const UserProfilePage = () => {
             className="w-16 h-16 rounded-full"
           />
           <div>
-            <h2 className="text-2xl font-bold text-[#8A1538]">
-              {profile.username}
-            </h2>
+            <h2 className="text-2xl font-bold text-[#8A1538]">{profile.username}</h2>
             <p className="text-sm text-gray-500">{profile.email}</p>
           </div>
 
-          {/* 💬 Message button if visiting someone else */}
+          {/* 💬 Message button if not your own profile */}
           {user?.uid !== viewedUserId && (
             <button
               className="ml-auto px-4 py-2 bg-[#8A1538] text-white rounded hover:bg-[#6d0f2e]"
-              onClick={() => alert("🔧 Messaging feature coming soon")}
+              onClick={handleMessageSeller}
             >
               Message
             </button>
           )}
         </div>
 
-        {/* 📚 Book Listings */}
+        {/* 📚 Listings */}
         <div>
           <h3 className="text-xl font-semibold text-gray-700 mb-4">
             Active Listings
@@ -111,7 +119,6 @@ const UserProfilePage = () => {
             </div>
           )}
         </div>
-
       </div>
     </section>
   );
