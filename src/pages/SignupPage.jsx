@@ -6,7 +6,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { auth, db } from "../services/firebase";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignupPage = () => {

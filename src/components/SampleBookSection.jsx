@@ -33,12 +33,12 @@ const sampleBooks = [
   },
 ];
 
-
 const SampleBooksSection = () => {
   return (
-    <section className="bg-[#f8edf0] py-12 px-4">
-      <div className="max-w-7xl mx-auto text-center mb-10">
-        <h2 className="text-3xl font-bold text-[#8A1538]">
+    <section className="bg-[#f8edf0] py-16 px-4">
+      {/* Header Section */}
+      <div className="max-w-3xl mx-auto text-center mb-10 px-4">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#8A1538]">
           Explore Popular Listings
         </h2>
         <p className="text-gray-600 mt-2 text-sm">
@@ -49,14 +49,21 @@ const SampleBooksSection = () => {
         </p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-6">
-        {sampleBooks.map((book, idx) => (
-          <BookCard key={idx} book={book} />
-        ))}
+      {/* Glossy Container */}
+      <div className="relative max-w-7xl mx-auto bg-white/10 backdrop-blur-md rounded-3xl shadow-xl border border-white/30 px-4 sm:px-6 py-8 overflow-hidden z-10">
+        {/* Blobs for visual flair */}
+        <div className="absolute -top-6 -left-6 w-28 h-28 bg-yellow-300 rounded-full blur-2xl opacity-20 z-0" />
+        <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-red-300 rounded-full blur-2xl opacity-20 z-0" />
+
+        {/* Book Cards Grid */}
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {sampleBooks.map((book, idx) => (
+            <BookCard key={idx} book={book} />
+          ))}
+        </div>
       </div>
     </section>
   );
 };
 
 export default SampleBooksSection;
-
