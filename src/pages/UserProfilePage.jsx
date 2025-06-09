@@ -78,7 +78,7 @@ const UserProfilePage = () => {
   }
 
   return (
-    <section className="bg-[#f8edf0] min-h-screen py-10 px-4">
+    <section className="bg-[#f6def8] min-h-screen py-10 px-4">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
         {/* 👤 Profile Info */}
         <div className="flex items-center gap-4 mb-6">

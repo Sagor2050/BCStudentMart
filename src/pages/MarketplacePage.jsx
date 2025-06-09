@@ -39,7 +39,7 @@ const MarketplacePage = () => {
   const handleAddBook = () => navigate("/post-book");
 
   return (
-    <section className="bg-[#f8edf0] min-h-screen py-10 px-4">
+    <section className="bg-[#f6def8] min-h-screen py-10 px-4">
       <SearchBar />
 
       <div className="max-w-7xl mx-auto">

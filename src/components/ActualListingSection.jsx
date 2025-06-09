@@ -27,7 +27,7 @@ const ActualListingsSection = () => {
   }, []);
 
   return (
-    <section className="bg-[#f8edf0] py-16 px-4">
+    <section className="bg-[#f6def8] py-16 px-4">
       {/* Centered Headline + Button */}
       <div className="max-w-3xl mx-auto text-center mb-10 px-4">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#8A1538]">
@@ -43,9 +43,9 @@ const ActualListingsSection = () => {
 
       {/* Glossy Container */}
       <div className="relative max-w-7xl mx-auto bg-white/10 backdrop-blur-md rounded-3xl shadow-xl border border-white/30 px-4 sm:px-6 py-8 overflow-hidden z-10">
-        {/* Blobs */}
-        <div className="absolute -top-6 -left-6 w-28 h-28 bg-yellow-300 rounded-full blur-2xl opacity-20 z-0" />
-        <div className="absolute -bottom-6 -right-6 w-28 h-28 bg-red-300 rounded-full blur-2xl opacity-20 z-0" />
+        {/* Blurred blobs */}
+        <div className="absolute -top-10 -left-10 w-40 h-40 bg-yellow-400 rounded-full blur-3xl opacity-30 z-0"></div>
+        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-red-400 rounded-full blur-3xl opacity-30 z-0"></div>
 
         {/* Book Cards Grid */}
         <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">

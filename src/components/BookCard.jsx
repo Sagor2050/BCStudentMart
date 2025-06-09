@@ -23,8 +23,10 @@ const BookCard = ({ book }) => {
   return (
     <div
       onClick={handleClick}
-      className="bg-white rounded-xl shadow-md overflow-hidden w-full max-w-[180px] mx-auto cursor-pointer hover:shadow-lg transition"
-    >
+      className="bg-white rounded-xl shadow-xl overflow-hidden w-full max-w-[180px] 
+      mx-auto cursor-pointer hover:shadow-lg transform transition-transform duration-300
+       hover:scale-105">
+
       <img
         src={book.imageURL || "https://via.placeholder.com/150x200.png?text=No+Image"}
         alt={book.title || "Book Cover"}
