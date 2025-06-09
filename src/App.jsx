@@ -23,7 +23,7 @@ function App() {
     <Routes>
       {/* Home Route */}
       <Route
-        path="/"
+        path="*"
         element={
           <>         
             <SearchBar />

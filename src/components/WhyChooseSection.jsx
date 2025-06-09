@@ -42,7 +42,7 @@ const WhyChooseSection = () => {
   <div className="relative z-10 w-full md:w-1/2 flex justify-center mb-8 md:mb-0">
     <div className="rounded-full overflow-hidden w-64 h-64 shadow-md border border-white/20">
       <img
-        src="/cover.jpg"
+        src="./cover.png"
         alt="Students"
         className="w-full h-full object-cover"
       />

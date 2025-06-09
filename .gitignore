@@ -33,7 +33,7 @@ dist-ssr
 
 # sensitive
 .env
-firebase-debug.log
+src/services/firebase.js
 
 # OS
 .DS_Store

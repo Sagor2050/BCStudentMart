@@ -2,26 +2,32 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../services/firebase';
-import { useAuth } from '../context/AuthContext'; 
+import { useAuth } from '../context/AuthContext';
 import SlidingButton from './SlidingButton';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const burgerRef = useRef(null);
   const navigate = useNavigate();
-  const { user, isLoggedIn } = useAuth(); 
+  const { user, isLoggedIn } = useAuth();
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   const handleLogout = async () => {
     await signOut(auth);
     navigate('/');
   };
 
-  // ✅ Close sidebar when clicking outside of it
+  // Close sidebar when clicking outside (but not on the hamburger)
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        burgerRef.current &&
+        !burgerRef.current.contains(event.target)
+      ) {
         setMenuOpen(false);
       }
     };
@@ -37,25 +43,38 @@ const Navbar = () => {
 
   return (
     <>
-      {/* 🔝 NAVBAR */}
-      <nav className="bg-[#8A1538] drop-shadow-2xl z-50 px-6 py-5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between text-sm font-medium text-gray-800">
-          {/* 🍔 Hamburger */}
+      {/* Sticky Navbar */}
+      <nav className="bg-[#8A1538] drop-shadow-2xl z-50 px-6 py-5 fixed top-0 w-full">
+        <div className="max-w-7xl mx-auto flex items-center justify-between text-sm font-medium text-white">
+          {/* Animated Hamburger Icon */}
           <button
+            ref={burgerRef}
             onClick={toggleMenu}
-            className="flex flex-col gap-[5px] p-2 hover:text-[#7D1431] focus:outline-none"
+            className="relative w-7 h-6 flex flex-col justify-between items-center focus:outline-none"
           >
-            <span className="w-7 h-[3px] bg-[#f8edf0] rounded"></span>
-            <span className="w-7 h-[3px] bg-[#f8edf0] rounded"></span>
-            <span className="w-7 h-[3px] bg-[#f8edf0] rounded"></span>
+            <span
+              className={`w-full h-[3px] bg-white rounded transition-transform duration-300 ease-in-out ${
+                menuOpen ? 'rotate-45 translate-y-[10px]' : ''
+              }`}
+            ></span>
+            <span
+              className={`w-full h-[3px] bg-white rounded transition-opacity duration-200 ${
+                menuOpen ? 'opacity-0' : 'opacity-100'
+              }`}
+            ></span>
+            <span
+              className={`w-full h-[3px] bg-white rounded transition-transform duration-300 ease-in-out ${
+                menuOpen ? '-rotate-45 -translate-y-[10px]' : ''
+              }`}
+            ></span>
           </button>
 
-          {/* 🎯 Right Buttons */}
+          {/* Right Side Buttons */}
           <div className="flex gap-4 items-center">
             {!isLoggedIn && (
               <button
                 onClick={() => navigate('/login')}
-                className="px-4 py-2 border border-[#f8edf0] text-[#f8edf0] rounded-lg hover:bg-[#7D1431] hover:text-white transition"
+                className="px-4 py-2 border border-white text-white rounded-lg hover:bg-white hover:text-[#8A1538] transition"
               >
                 Login
               </button>
@@ -73,27 +92,27 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* 📱 SIDEBAR */}
+      {/* Sidebar */}
       <div
         ref={menuRef}
-        className={`fixed top-0 left-0 z-40 h-full w-64 bg-gray-100 shadow-md border-r border-gray-300 transition-transform duration-300 ${
+        className={`fixed top-0 left-0 z-40 h-full w-64 bg-gray-100 shadow-md border-r border-gray-300 transition-transform duration-300 pt-[70px] ${
           menuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* 🔝 Sidebar Header */}
-        <div className="p-4 border-b border-gray-300 flex justify-between items-center">
-          <a href="/" className="text-[#7D1431] font-bold text-lg">
-            📘 BCStudentMart
-          </a>
+        {/* Sidebar Header */}
+        <div className="p-4 border-b border-gray-300">
           <button
-            onClick={toggleMenu}
-            className="text-xl font-bold text-[#7D1431] hover:text-[#5a0f24]"
+            onClick={() => {
+              navigate('/');
+              setMenuOpen(false);
+            }}
+            className="text-[#7D1431] font-bold text-lg"
           >
-            ×
+           📘 BCStudentMart
           </button>
         </div>
 
-        {/* 📋 Menu Items */}
+        {/* Menu Items */}
         <div className="flex flex-col">
           <button
             onClick={() => {
@@ -153,6 +172,9 @@ const Navbar = () => {
           </button>
         </div>
       </div>
+
+      {/* Spacer */}
+      <div className="h-[70px]" />
     </>
   );
 };
