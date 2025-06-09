@@ -16,13 +16,13 @@ const SignupPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false); // New state for preventing double submit
+  const [loading, setLoading] = useState(false);
 
   const allowedDomains = [
     "@student.brooklyn.cuny.edu",
     "@bcmail.cuny.edu",
     "@smail.astate.edu",
-    "@gmail.com", // Change later after testing
+    "@gmail.com", // for testing
   ];
 
   const isAllowedEmail = (email) =>
@@ -30,7 +30,7 @@ const SignupPage = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (loading) return; // Prevent duplicate requests
+    if (loading) return;
 
     setLoading(true);
     setMessage("");
@@ -44,10 +44,8 @@ const SignupPage = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      console.log("✅ User created:", user.uid);
 
       await updateProfile(user, { displayName: name });
-      console.log("✅ User profile updated with name:", name);
 
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
@@ -58,30 +56,30 @@ const SignupPage = () => {
         conversations: [],
         createdAt: new Date(),
       });
-      console.log("✅ User data saved to Firestore");
 
-      await sendEmailVerification(user);
-      console.log("✅ Verification email sent to:", user.email);
+      await sendEmailVerification(user, {
+        url: "https://sagor2050.github.io/BCStudentMart/verify-email",
+      });
 
       await signOut(auth);
-      console.log("👋 User signed out to prevent verification issue");
 
-      setMessage("✅ Verification email sent! Please check your inbox.");
+      setMessage("Verification email sent! Please check your inbox.");
       setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
-      console.error("❌ Signup error:", error.message);
+      console.error("Signup error:", error.message);
       setMessage(error.message);
     } finally {
-      setLoading(false); // Re-enable form
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-20 bg-[#f8edf0] relative">
+      {/* Logo */}
       <div className="absolute top-4 left-4">
         <Link to="/">
           <img
-            src="/logo.png"
+            src="./logo.png"
             alt="BCStudentMart Logo"
             className="w-28 h-auto hover:opacity-80 transition"
           />
@@ -99,40 +97,42 @@ const SignupPage = () => {
             <label className="block text-sm font-medium text-gray-700">Full Name</label>
             <input
               type="text"
-              placeholder="Your name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#8A1538] outline-none"
+              placeholder="Your name"
               required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#8A1538] outline-none"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
-              placeholder="yourname@bcmail.cuny.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#8A1538] outline-none"
+              placeholder="yourname@bcmail.cuny.edu"
               required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#8A1538] outline-none"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
-              placeholder="Create a password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#8A1538] outline-none"
+              placeholder="Create a password"
               required
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#8A1538] outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#8A1538] text-white py-2 rounded-md transition hover:bg-[#6d0f2e] disabled:opacity-50"
+            className="w-full bg-[#8A1538] text-white py-2 rounded-md hover:bg-[#6d0f2e] transition disabled:opacity-50"
           >
             {loading ? "Signing up..." : "Sign Up"}
           </button>
